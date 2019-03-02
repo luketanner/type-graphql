@@ -141,7 +141,9 @@ export abstract class SchemaGenerator {
               objectType => this.objectTypesInfo.find(type => type.target === objectType)!.type,
             ),
           resolveType: instance => {
-            const instanceTarget = unionMetadata.types.find(type => instance instanceof type);
+            const instanceTarget = unionMetadata.resolveType
+              ? unionMetadata.resolveType(instance)
+              : unionMetadata.types.find(type => instance instanceof type);
             if (!instanceTarget) {
               throw new UnionResolveTypeError(unionMetadata);
             }
