@@ -29,6 +29,9 @@ export type NullableListOptions = "items" | "itemsAndList";
 export interface TypeOptions extends DecoratorTypeOptions {
   array?: boolean;
 }
+export interface ResolveTypeOptions<TInstance> {
+  resolveType?: (instance: TInstance) => ClassType;
+}
 export interface DescriptionOptions {
   description?: string;
 }
@@ -56,6 +59,9 @@ export interface EnumConfig {
 }
 
 export type MethodAndPropDecorator = PropertyDecorator & MethodDecorator;
+export type SpecificClassDecorator<TInstance> = <TClass extends ClassType<TInstance>>(
+  target: TClass,
+) => TClass | void;
 
 export interface ResolverClassOptions {
   isAbstract?: boolean;

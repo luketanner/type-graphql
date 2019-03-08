@@ -12,6 +12,7 @@ import {
   ResolverClassMetadata,
   SubscriptionResolverMetadata,
   MiddlewareMetadata,
+  InterfaceMetadata,
 } from "./definitions";
 import { ClassType } from "../interfaces";
 import { NoExplicitTypeError } from "../errors";
@@ -30,7 +31,7 @@ export class MetadataStorage {
   objectTypes: ClassMetadata[] = [];
   inputTypes: ClassMetadata[] = [];
   argumentTypes: ClassMetadata[] = [];
-  interfaceTypes: ClassMetadata[] = [];
+  interfaceTypes: InterfaceMetadata[] = [];
   authorizedFields: AuthorizedMetadata[] = [];
   enums: EnumMetadata[] = [];
   unions: UnionMetadataWithSymbol[] = [];
@@ -65,7 +66,7 @@ export class MetadataStorage {
   collectArgsMetadata(definition: ClassMetadata) {
     this.argumentTypes.push(definition);
   }
-  collectInterfaceMetadata(definition: ClassMetadata) {
+  collectInterfaceMetadata(definition: InterfaceMetadata) {
     this.interfaceTypes.push(definition);
   }
   collectAuthorizedFieldMetadata(definition: AuthorizedMetadata) {
