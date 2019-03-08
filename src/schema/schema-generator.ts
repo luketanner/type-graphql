@@ -184,6 +184,16 @@ export abstract class SchemaGenerator {
           type: new GraphQLInterfaceType({
             name: interfaceType.name,
             description: interfaceType.description,
+            resolveType: instance => {
+              if (!interfaceType.resolveType) {
+                return;
+              }
+              const instanceTarget = interfaceType.resolveType(instance);
+              const objectTypeInfo = this.objectTypesInfo.find(
+                type => type.target === instanceTarget,
+              );
+              return objectTypeInfo && objectTypeInfo.type;
+            },
             fields: () => {
               let fields = interfaceType.fields!.reduce<GraphQLFieldConfigMap<any, any>>(
                 (fieldsMap, field) => {
@@ -220,13 +230,22 @@ export abstract class SchemaGenerator {
         return superClassTypeInfo ? superClassTypeInfo.type : undefined;
       };
       const interfaceClasses = objectType.interfaceClasses || [];
+      const interfacesWithoutResolveType = interfaceClasses.filter(interfaceClass => {
+        const interfaceType = getMetadataStorage().interfaceTypes.find(
+          type => type.target === interfaceClass,
+        );
+        if (interfaceType && interfaceType.resolveType) {
+          return false;
+        }
+        return true;
+      });
       return {
         target: objectType.target,
         type: new GraphQLObjectType({
           name: objectType.name,
           description: objectType.description,
           isTypeOf:
-            hasExtended || interfaceClasses.length > 0
+            hasExtended || interfacesWithoutResolveType.length > 0
               ? instance => instance instanceof objectType.target
               : undefined,
           interfaces: () => {
